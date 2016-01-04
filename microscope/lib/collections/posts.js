@@ -6,8 +6,11 @@ Posts.allow({
 });
 
 Posts.deny({
-	update: function (userId, post, fieldNames) {
-		return (_.without(fieldNames, 'url', 'title').length > 0);
+	//unavailable callback
+	update: function (userId, post, fieldNames, modifier) {
+		// return (_.without(fieldNames, 'url', 'title').length > 0);
+		var errors = validatePost(modifier.$set);
+		return errors.title || errors.url;
 	}
 });
 
@@ -40,6 +43,11 @@ Meteor.methods({
 	},
 
 	postUpdate: function(postAttributes) {
+		var errors = validatePost(postAttributes);
+		if (errors.title || errors.url) {
+			throw new Meteor.Error('invalid-post', "你必须为你的帖子填写标题和url");
+		}
+
 		var postWithSamLink = Posts.findOne({url: postAttributes.url});
 		if (postWithSamLink) {
 			return {
@@ -50,7 +58,7 @@ Meteor.methods({
 
 		//alert("postAttributes url: " + postAttributes.url);
 		var postId = postAttributes.postId;
-		Posts.update(postId, {$set: postAttributes});
+		Posts.update(postId, {$set: postAttributes}, function(error){});
 
 		return {
 			_id: postId
