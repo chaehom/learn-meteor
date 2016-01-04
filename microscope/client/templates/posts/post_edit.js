@@ -19,15 +19,18 @@ Template.postEdit.events({
 		// });
 		Meteor.call('postUpdate', postProperties, function(error, result) {
 			if (error) {
-				return alert(error.reaseon);
+				//return alert(error.reaseon);
+				throwError(error.reason);
 			}
 
 			if (result.postExists) {
-				return alert('This link has already been posted');
+				//return alert('This link has already been posted');
+				throwError('This link has already been posted');
 			}
 			else
 			{
-				return alert('Update Done!');
+				// return alert('Update Done!');
+				throwError('Update Done!');
 			}
 		});
 	},
