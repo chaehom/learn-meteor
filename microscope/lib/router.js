@@ -3,7 +3,11 @@ Router.configure({
 	loadingTemplate: 'loading',
 	notFoundTemplate: 'notFound',
 	waitOn: function() {
-		return [Meteor.subscribe('posts'), Meteor.subscribe('comments')]; 
+		return [
+			Meteor.subscribe('posts'), 
+			Meteor.subscribe('comments'),
+			Meteor.subscribe('notifications')
+		]; 
 	}
 });
 
